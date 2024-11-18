@@ -142,6 +142,7 @@ namespace TSMapEditor.UI.TopBar
                 }
                 else
                 {
+                    editContextMenu.AddItem("Repeat Last Connected Tile", RepeatLastConnectedTile, null, null, null, KeyboardCommands.Instance.RepeatConnectedTile.GetKeyDisplayString());
                     editContextMenu.AddItem("Draw Connected Tiles...", () => windowController.SelectConnectedTileWindow.Open(), null, null, null, KeyboardCommands.Instance.PlaceConnectedTile.GetKeyDisplayString());
                 }
             }
@@ -258,6 +259,7 @@ namespace TSMapEditor.UI.TopBar
             KeyboardCommands.Instance.ConfigureTerrainGenerator.Triggered += (s, e) => windowController.TerrainGeneratorConfigWindow.Open();
             KeyboardCommands.Instance.PlaceTunnel.Triggered += (s, e) => mapUI.EditorState.CursorAction = placeTubeCursorAction;
             KeyboardCommands.Instance.PlaceConnectedTile.Triggered += (s, e) => windowController.SelectConnectedTileWindow.Open();
+            KeyboardCommands.Instance.RepeatConnectedTile.Triggered += (s, e) => RepeatLastConnectedTile();
             KeyboardCommands.Instance.Save.Triggered += (s, e) => SaveMap();
 
             windowController.TerrainGeneratorConfigWindow.ConfigApplied += TerrainGeneratorConfigWindow_ConfigApplied;
@@ -339,6 +341,14 @@ namespace TSMapEditor.UI.TopBar
                 "you save the map.", Windows.MessageBoxButtons.YesNo);
 
             messageBox.YesClickedAction = _ => mapUI.AddPreviewToMap();
+        }
+
+        private void RepeatLastConnectedTile()
+        {
+            if (windowController.SelectConnectedTileWindow.SelectedObject == null)
+                windowController.SelectConnectedTileWindow.Open();
+            else
+                SelectConnectedTileWindow_ObjectSelected(this, EventArgs.Empty);
         }
 
         private void OpenWithTextEditor()

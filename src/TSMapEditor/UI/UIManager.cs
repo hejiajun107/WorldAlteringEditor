@@ -316,12 +316,7 @@ namespace TSMapEditor.UI
         private void ClearKeyboard()
         {
             Keyboard.OnKeyPressed -= Keyboard_OnKeyPressed;
-
-            KeyboardCommands.Instance.Undo.Triggered -= UndoAction;
-            KeyboardCommands.Instance.Redo.Triggered -= RedoAction;
-            KeyboardCommands.Instance.Copy.Triggered -= CopyRectanglularAreaAction;
-            KeyboardCommands.Instance.CopyCustomShape.Triggered -= CopyCustomShapedAreaAction;
-            KeyboardCommands.Instance.Paste.Triggered -= PasteAction;
+            KeyboardCommands.Instance.ClearCommandSubscriptions();
         }
 
         private void InitMapUI()

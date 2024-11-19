@@ -299,7 +299,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
         private MapTile GetSouthernmostCell(T gameObject)
         {
-            MapTile tile;
+            MapTile tile = null;
 
             if (gameObject.WhatAmI() == RTTIType.Building)
             {
@@ -308,6 +308,33 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 tile = Map.GetTile(southernmostCellCoords);
                 if (tile == null)
                     tile = Map.GetTile(structure.Position);
+            }
+            else if (gameObject.WhatAmI() == RTTIType.Terrain)
+            {
+                var terrainObject = gameObject as TerrainObject;
+
+                // If the terrain object is larger than 1x1, we might need to handle it more like structures.
+                // We can do this by looking at its impassable cell configuration.
+                if (terrainObject.TerrainType.ImpassableCells != null)
+                {
+                    int maxX = 0;
+                    int maxY = 0;
+                    for (int i = 0; i < terrainObject.TerrainType.ImpassableCells.Count; i++)
+                    {
+                        var impassableCellOffset = terrainObject.TerrainType.ImpassableCells[i];
+                        if (impassableCellOffset.X > maxX)
+                            maxX = impassableCellOffset.X;
+
+                        if (impassableCellOffset.Y > maxY)
+                            maxY = impassableCellOffset.Y;
+                    }
+
+                    Point2D southernmostCellCoords = terrainObject.Position + new Point2D(maxX, maxY);
+                    tile = Map.GetTile(southernmostCellCoords);
+                }
+
+                if (tile == null)
+                    tile = Map.GetTile(terrainObject.Position);
             }
             else
             {

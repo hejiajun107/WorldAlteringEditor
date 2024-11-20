@@ -84,7 +84,7 @@ namespace TSMapEditor.Rendering
 
         public int ScaleIntWithZoom(int value) => (int)(value * ZoomLevel);
 
-        public Point2D ScalePointWithZoom(Point2D value) => new Point2D((int)(value.X * ZoomLevel), (int)(value.Y * ZoomLevel));
+        public Point2D ScalePointWithZoom(Point2D value) => value.ScaleBy(ZoomLevel);
 
         public void CenterOnCell(Point2D cellCoords)
         {

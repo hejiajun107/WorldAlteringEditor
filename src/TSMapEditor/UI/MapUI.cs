@@ -474,9 +474,11 @@ namespace TSMapEditor.UI
             {
                 if (Cursor.LeftDown)
                 {
-                    if (tileUnderCursor != null && lastTileUnderCursor != tileUnderCursor)
+                    if (tileUnderCursor != null)
                     {
-                        CursorAction.LeftDown(tileUnderCursor.CoordsToPoint());
+                        if (lastTileUnderCursor != tileUnderCursor || !CursorAction.OnlyUniqueCellEvents)
+                            CursorAction.LeftDown(tileUnderCursor.CoordsToPoint());
+
                         lastTileUnderCursor = tileUnderCursor;
                     }
                 }

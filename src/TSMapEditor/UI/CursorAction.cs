@@ -54,6 +54,8 @@ namespace TSMapEditor.UI
         /// </summary>
         public virtual bool SeeThrough => true;
 
+        public virtual bool OnlyUniqueCellEvents => true;
+
         public abstract string GetName();
 
         protected Map Map => CursorActionTarget.Map;

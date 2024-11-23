@@ -26,6 +26,28 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             };
         }
 
+        protected override float GetDepthFromPosition(Unit gameObject, int bottomDrawPoint)
+        {
+            // Because vehicles can include turrets, the default implementation
+            // is not suitable. For example, bodies can be rendered southward of turrets
+            // facing north, leading the bodies to have higher depth and overlapping turrets.
+            //
+            // Instead, we calculate a positional depth value using the vehicle's cell.
+            // This depth value is identical for the base vehicle sprite and turret,
+            // making it easy to draw the turret either above or below the vehicle
+            // by applying DepthEpsilon.
+            var cell = Map.GetTile(gameObject.Position);
+
+            int height = 0;
+            if (cell != null)
+            {
+                height = cell.Level;
+            }
+
+            return ((CellMath.CellTopLeftPointFromCellCoords(cell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+                (height * Constants.DepthRenderStep);
+        }
+
         protected override float GetDepthAddition(Unit gameObject)
         {
             return Constants.DepthEpsilon * ObjectDepthAdjustments.Vehicle;

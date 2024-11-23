@@ -105,7 +105,7 @@ namespace TSMapEditor
         public const float DownwardsDepthRenderSpace = 0.75f;
 
         // How much of the depth scale (0.0 to 1.0) is reserved for depth increasing as we go up the map height levels.
-        public static readonly float DepthRenderStep = DepthEpsilon * 2;
+        public static readonly float DepthRenderStep = DepthEpsilon * 3;
 
         public const string ClipboardMapDataFormatValue = "ScenarioEditorCopiedMapData";
         public const string UserDataFolder = "UserData";

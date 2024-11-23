@@ -164,6 +164,7 @@ namespace TSMapEditor.Rendering
 
             if (pngTexture != null && !remapable)
             {
+                IsPNG = true;
                 Frames = new PositionedTexture[] { pngTexture };
                 return;
             }
@@ -198,6 +199,8 @@ namespace TSMapEditor.Rendering
         private GraphicsDevice graphicsDevice;
 
         public bool SubjectToLighting { get; }
+
+        public bool IsPNG { get; }
 
         public int GetFrameCount() => Frames.Length;
 

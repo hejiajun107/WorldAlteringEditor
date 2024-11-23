@@ -4,7 +4,7 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public class OverlayRenderer : ObjectRenderer<Overlay>
+    public sealed class OverlayRenderer : ObjectRenderer<Overlay>
     {
         public OverlayRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
         {
@@ -19,6 +19,34 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 IniName = gameObject.OverlayType.ININame,
                 ShapeImage = TheaterGraphics.OverlayTextures[gameObject.OverlayType.Index]
             };
+        }
+
+        protected override float GetDepthFromPosition(Overlay gameObject, Rectangle drawingBounds)
+        {
+            // Calculate position-related depth from the southernmost edge of the cell of the southernmost texture coordinate of the object.
+            var cellPixelCoords = CellMath.CellTopLeftPointFromCellCoords(gameObject.Position, Map);
+            int dy = drawingBounds.Bottom - cellPixelCoords.Y;
+            int wholeCells = dy / Constants.CellSizeY;
+            int fraction = dy % Constants.CellSizeY;
+            int cellY = cellPixelCoords.Y + (wholeCells + 1) * Constants.CellSizeY;
+
+            if (fraction > (Constants.CellSizeY * 3) / 2 &&
+                (drawingBounds.X < cellPixelCoords.X || drawingBounds.Right > cellPixelCoords.X + Constants.CellSizeX))
+            {
+                // This object leaks into the neighbouring cells - to another "isometric row"
+                cellY += Constants.CellSizeY / 2;
+            }
+
+            // Use height from the cell where the object has been placed.
+            var heightLookupCell = Map.GetTile(gameObject.Position);
+            int height = 0;
+            if (heightLookupCell != null)
+            {
+                height = heightLookupCell.Level;
+            }
+
+            return ((cellY + (height * Constants.CellHeight)) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+                (height * Constants.DepthRenderStep);
         }
 
         protected override float GetDepthAddition(Overlay gameObject)

@@ -112,6 +112,7 @@ namespace TSMapEditor.Rendering
         private bool minimapNeedsRefresh;
 
         private List<Structure> structuresToRender = new List<Structure>();
+        private List<Overlay> flatOverlaysToRender = new List<Overlay>();
         private List<GameObject> gameObjectsToRender = new List<GameObject>(); 
         private List<Smudge> smudgesToRender = new List<Smudge>();
         private ObjectSpriteRecord objectSpriteRecord = new ObjectSpriteRecord();
@@ -349,6 +350,7 @@ namespace TSMapEditor.Rendering
             refreshStopwatch.Restart();
 
             smudgesToRender.Clear();
+            flatOverlaysToRender.Clear();
             structuresToRender.Clear();
             gameObjectsToRender.Clear();
 
@@ -367,23 +369,37 @@ namespace TSMapEditor.Rendering
             SetPaletteEffectParams(palettedColorDrawEffect, TheaterGraphics.TheaterPalette.GetTexture(), true, false, 1.0f);
             palettedColorDrawEffect.Parameters["ComplexDepth"].SetValue(false);
             palettedColorDrawEffect.Parameters["IncreaseDepthUpwards"].SetValue(false);
+            palettedColorDrawEffect.Parameters["DecreaseDepthUpwards"].SetValue(true);
             var palettedColorDrawSettings = new SpriteBatchSettings(spriteSortMode, BlendState.Opaque, null, depthRenderStencilState, null, palettedColorDrawEffect);
             Renderer.PushSettings(palettedColorDrawSettings);
             DoForVisibleCells(DrawTerrainTileAndRegisterObjects);
             Renderer.PopSettings();
 
+            // We do not need to write to the depth render target when drawing smudges and flat overlays.
+            // Swap to using only the main map render target.
+            // At this point of drawing, depth testing is done on depth buffer embedded in the main map render target.
+            Renderer.PopRenderTarget();
+            Renderer.PushRenderTarget(mapRenderTarget);
+
+            // Smudges can be drawn as part of regular terrain.
+            DrawSmudges();
+
+            // Same goes for flat overlays.
+            SetPaletteEffectParams(palettedColorDrawEffect, TheaterGraphics.TheaterPalette.GetTexture(), true, false, 1.0f);
+            palettedColorDrawEffect.Parameters["DecreaseDepthUpwards"].SetValue(false);
+            DrawFlatOverlays();
+
             Renderer.PopRenderTarget();
 
-            // Render objects
+            // Render non-flat objects
             Renderer.PushRenderTargets(objectsRenderTarget, objectsDepthRenderTarget);
 
             if (mapInvalidated)
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Transparent, 0f, 0);
 
-            DrawSmudges();
-
             // We need to enable this for buildings and game objects.
             palettedColorDrawEffect.Parameters["IncreaseDepthUpwards"].SetValue(true);
+            palettedColorDrawEffect.Parameters["DecreaseDepthUpwards"].SetValue(false);
             DrawBuildings();
             DrawGameObjects();
 
@@ -538,7 +554,12 @@ namespace TSMapEditor.Rendering
                 smudgesToRender.Add(tile.Smudge);
 
             if ((EditorState.RenderObjectFlags & RenderObjectFlags.Overlay) == RenderObjectFlags.Overlay && tile.Overlay != null && tile.Overlay.OverlayType != null)
-                AddGameObjectToRender(tile.Overlay);
+            {
+                if (tile.Overlay.OverlayType.DrawFlat)
+                    AddFlatOverlayToRender(tile.Overlay);
+                else
+                    AddGameObjectToRender(tile.Overlay);
+            }
 
             if ((EditorState.RenderObjectFlags & RenderObjectFlags.Structures) == RenderObjectFlags.Structures)
             {
@@ -568,6 +589,14 @@ namespace TSMapEditor.Rendering
                 return;
 
             structuresToRender.Add(structure);
+        }
+
+        private void AddFlatOverlayToRender(Overlay overlay)
+        {
+            if (objectSpriteRecord.ProcessedObjects.Contains(overlay))
+                return;
+
+            flatOverlaysToRender.Add(overlay);
         }
 
         private void AddGameObjectToRender(GameObject gameObject)
@@ -752,6 +781,19 @@ namespace TSMapEditor.Rendering
             Renderer.PopSettings();
         }
 
+        private void DrawFlatOverlays()
+        {
+            flatOverlaysToRender.Sort(CompareGameObjectsForRendering);
+            for (int i = 0; i < flatOverlaysToRender.Count; i++)
+            {
+                DrawObject(flatOverlaysToRender[i]);
+                objectSpriteRecord.ProcessedObjects.Add(flatOverlaysToRender[i]);
+            }
+
+            ProcessObjectSpriteRecord(false, false, true); // Do not process building shadows yet, let DrawGameObjects do it
+            objectSpriteRecord.Clear(true);
+        }
+
         /// <summary>
         /// Draws buildings. Due to their large size and non-flat shape in the game world,
         /// buildings are rendered with different shader settings from other objects and
@@ -766,7 +808,7 @@ namespace TSMapEditor.Rendering
                 objectSpriteRecord.ProcessedObjects.Add(structuresToRender[i]);
             }
 
-            ProcessObjectSpriteRecord(true, false); // Do not process building shadows yet, let DrawGameObjects do it
+            ProcessObjectSpriteRecord(true, false, false); // Do not process building shadows yet, let DrawGameObjects do it
             objectSpriteRecord.Clear(true);
         }
 
@@ -783,7 +825,7 @@ namespace TSMapEditor.Rendering
                 objectSpriteRecord.ProcessedObjects.Add(gameObjectsToRender[i]);
             }
 
-            ProcessObjectSpriteRecord(false, true);
+            ProcessObjectSpriteRecord(false, true, false);
         }
 
         private void DrawObject(GameObject gameObject)
@@ -822,7 +864,7 @@ namespace TSMapEditor.Rendering
             }
         }
 
-        private void ProcessObjectSpriteRecord(bool complexDepth, bool processShadows)
+        private void ProcessObjectSpriteRecord(bool complexDepth, bool processShadows, bool alphaBlendNonPalettedSprites)
         {
             if (objectSpriteRecord.LineEntries.Count > 0)
             {
@@ -860,7 +902,11 @@ namespace TSMapEditor.Rendering
             if (objectSpriteRecord.NonPalettedSpriteEntries.Count > 0)
             {
                 SetPaletteEffectParams(palettedColorDrawEffect, null, false, false, 1.0f, false, complexDepth);
-                Renderer.PushSettings(new SpriteBatchSettings(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, objectRenderStencilState, null, palettedColorDrawEffect));
+                Renderer.PushSettings(new SpriteBatchSettings(SpriteSortMode.Deferred,
+                    alphaBlendNonPalettedSprites ? BlendState.AlphaBlend : BlendState.Opaque,
+                    null,
+                    alphaBlendNonPalettedSprites ? depthRenderStencilState : objectRenderStencilState,
+                    null, palettedColorDrawEffect));
 
                 for (int i = 0; i < objectSpriteRecord.NonPalettedSpriteEntries.Count; i++)
                 {

@@ -16,6 +16,7 @@
 float WorldTextureHeight;
 bool ComplexDepth;
 bool IncreaseDepthUpwards;
+bool DecreaseDepthUpwards;
 bool IsShadow;
 bool UsePalette;
 bool UseRemap;
@@ -100,6 +101,10 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
         else if (IncreaseDepthUpwards)
         {
             totalDepth = input.Position.z + ((distanceFromBottom / WorldTextureHeight) * depthMultiplier);
+        }
+        else if (DecreaseDepthUpwards)
+        {
+            totalDepth = input.Position.z - ((distanceFromBottom / WorldTextureHeight) * depthMultiplier);
         }
         else
         {

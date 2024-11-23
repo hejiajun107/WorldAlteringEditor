@@ -108,15 +108,15 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             return base.ShouldRenderReplacementText(gameObject);
         }
 
-        protected override float GetDepthFromPosition(Structure gameObject, int bottomDrawPoint)
+        protected override float GetDepthFromPosition(Structure gameObject, Rectangle drawingBounds)
         {
             // As buildings can cover multiple cells and can also include turrets, the default implementation
-            // is not suitable. For example, sprites can be rendered southward of voxel turrets facing north, leading them
-            // the sprites to have higher depth and overlapping the voxel turrets.
+            // is not suitable. For example, body sprites can be rendered southward of turrets facing north, leading
+            // the body sprites to have higher depth and overlapping the turrets.
             //
             // Instead, for buildings we calculate a positional depth value using the southernmost cell
             // of the building's foundation. This depth value is identical for the base building sprite
-            // and turret, making it easy to draw the voxel either above or below the building
+            // and turret, making it easy to draw the turret either above or below the building
             // by applying DepthEpsilon.
             var southernmostCell = GetSouthernmostCell(gameObject);
 
@@ -126,7 +126,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = southernmostCell.Level;
             }
 
-            return ((CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY * 2) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return ((CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 

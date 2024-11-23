@@ -26,26 +26,31 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             };
         }
 
-        protected override float GetDepthFromPosition(Unit gameObject, int bottomDrawPoint)
+        Rectangle lowestDrawRectangle;
+        float cachedDepth;
+
+        public override void InitDrawForObject(Unit gameObject)
+        {
+            lowestDrawRectangle = Rectangle.Empty;
+            cachedDepth = -1f;
+        }
+
+        protected override float GetDepthFromPosition(Unit gameObject, Rectangle drawingBounds)
         {
             // Because vehicles can include turrets, the default implementation
             // is not suitable. For example, bodies can be rendered southward of turrets
             // facing north, leading the bodies to have higher depth and overlapping turrets.
             //
-            // Instead, we calculate a positional depth value using the vehicle's cell.
-            // This depth value is identical for the base vehicle sprite and turret,
-            // making it easy to draw the turret either above or below the vehicle
-            // by applying DepthEpsilon.
-            var cell = Map.GetTile(gameObject.Position);
-
-            int height = 0;
-            if (cell != null)
+            // To fix this, we normalize everything to use the maximum depth based on the frame
+            // that is drawn southernmost.
+            if (lowestDrawRectangle.Bottom >= drawingBounds.Bottom)
             {
-                height = cell.Level;
+                return cachedDepth;
             }
 
-            return ((CellMath.CellTopLeftPointFromCellCoords(cell.CoordsToPoint(), Map).Y + (Constants.CellSizeY * 2)) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
-                (height * Constants.DepthRenderStep);
+            lowestDrawRectangle = drawingBounds;
+            cachedDepth = base.GetDepthFromPosition(gameObject, drawingBounds);
+            return cachedDepth;
         }
 
         protected override float GetDepthAddition(Unit gameObject)

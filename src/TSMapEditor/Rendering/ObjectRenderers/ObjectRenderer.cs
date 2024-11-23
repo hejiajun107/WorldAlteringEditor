@@ -4,6 +4,7 @@ using Rampastring.XNAUI;
 using System;
 using TSMapEditor.CCEngine;
 using TSMapEditor.GameMath;
+using TSMapEditor.Initialization;
 using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
@@ -283,18 +284,24 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
             float textureHeight = (regularFrame != null && regularFrame.Texture != null) ? (float)regularFrame.Texture.Height : shadowFrame.Texture.Height;
 
-            float depth = GetDepthFromPosition(gameObject);
+            float depth = GetDepthFromPosition(gameObject, drawingBounds.Bottom);
             // depth += GetDepthAddition(gameObject);
             depth += textureHeight / Map.HeightInPixelsWithCellHeight;
 
             RenderDependencies.ObjectSpriteRecord.AddGraphicsEntry(new ObjectSpriteEntry(null, texture, drawingBounds, new Color(255, 255, 255, 128), false, true, depth));
         }
 
-        private float GetDepthFromPosition(T gameObject)
+        private float GetDepthFromPosition(T gameObject, int bottomDrawPoint)
         {
-            var southernmostCell = GetSouthernmostCell(gameObject);
+            var southernmostCell = Map.GetTile(gameObject.Position); // GetSouthernmostCell(gameObject);
 
-            return CellMath.GetDepthForCell(southernmostCell.CoordsToPoint(), Map);
+            int height = 0;
+            if (southernmostCell != null)
+            {
+                height = southernmostCell.Level;
+            }
+
+            return ((bottomDrawPoint + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace + (height * Constants.DepthRenderStep);
         }
 
         private MapTile GetSouthernmostCell(T gameObject)
@@ -406,7 +413,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 }
             }
 
-            depthAddition += GetDepthFromPosition(gameObject);
+            depthAddition += GetDepthFromPosition(gameObject, drawingBounds.Bottom);
             depthAddition += GetDepthAddition(gameObject);
 
             RenderFrame(gameObject, frame, remapFrame, color, drawRemap, remapColor,
@@ -454,12 +461,12 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 }
             }
 
-            depthAddition += GetDepthFromPosition(gameObject);
+            Rectangle drawingBounds = GetTextureDrawCoords(gameObject, frame, drawPoint);
+
+            depthAddition += GetDepthFromPosition(gameObject, drawingBounds.Bottom);
             depthAddition += GetDepthAddition(gameObject);
 
             remapColor = ScaleColorToAmbient(remapColor, mapCell.CellLighting);
-
-            Rectangle drawingBounds = GetTextureDrawCoords(gameObject, frame, drawPoint);
 
             RenderFrame(gameObject, frame, remapFrame, color, drawRemap, remapColor,
                 drawingBounds, null, lighting, depthAddition, 0.5f, compensateForBottomGap);

@@ -291,20 +291,23 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             RenderDependencies.ObjectSpriteRecord.AddGraphicsEntry(new ObjectSpriteEntry(null, texture, drawingBounds, new Color(255, 255, 255, 128), false, true, depth));
         }
 
-        private float GetDepthFromPosition(T gameObject, int bottomDrawPoint)
+        protected virtual float GetDepthFromPosition(T gameObject, int bottomDrawPoint)
         {
-            var southernmostCell = Map.GetTile(gameObject.Position); // GetSouthernmostCell(gameObject);
+            // In this generic implementation, we only use the cell to fetch its height.
+            // Otherwise, position-related depth is calculated from the bottom draw point of the object.
+            var cell = Map.GetTile(gameObject.Position);
 
             int height = 0;
-            if (southernmostCell != null)
+            if (cell != null)
             {
-                height = southernmostCell.Level;
+                height = cell.Level;
             }
 
-            return ((bottomDrawPoint + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace + (height * Constants.DepthRenderStep);
+            return ((bottomDrawPoint + (height * Constants.CellHeight) + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+                (height * Constants.DepthRenderStep);
         }
 
-        private MapTile GetSouthernmostCell(T gameObject)
+        protected MapTile GetSouthernmostCell(T gameObject)
         {
             MapTile tile = null;
 

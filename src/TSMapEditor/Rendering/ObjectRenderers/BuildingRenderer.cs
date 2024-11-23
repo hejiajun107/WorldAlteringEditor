@@ -126,7 +126,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = southernmostCell.Level;
             }
 
-            return ((CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return ((CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY * 2) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 

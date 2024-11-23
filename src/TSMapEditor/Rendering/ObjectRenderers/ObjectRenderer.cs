@@ -293,9 +293,13 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
         protected virtual float GetDepthFromPosition(T gameObject, int bottomDrawPoint)
         {
-            // In this generic implementation, we only use the cell to fetch its height.
-            // Otherwise, position-related depth is calculated from the bottom draw point of the object.
+            // Calculate position-related depth from the bottom draw point of the object.
+            // Snap the texture height to the southernmost pixel coordinate of the southernmost
+            // cell that this object's texture overlaps.
             var cell = Map.GetTile(gameObject.Position);
+            int cellY = CellMath.CellTopLeftPointFromCellCoords(gameObject.Position, Map).Y;
+            int dy = bottomDrawPoint - cellY;
+            int extraHeightForSnap = dy % Constants.CellHeight;
 
             int height = 0;
             if (cell != null)
@@ -303,7 +307,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = cell.Level;
             }
 
-            return ((bottomDrawPoint + (height * Constants.CellHeight) + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return ((bottomDrawPoint + (height * Constants.CellHeight) + extraHeightForSnap) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 
@@ -485,7 +489,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 depthAddition = 1.0f;
 
             // Add extra depth so objects show above terrain despite float imprecision
-            depthAddition += Constants.DepthEpsilon;
+            // depthAddition += Constants.DepthEpsilon;
 
             // There can be a gap between the end of the texture and the bottom-most cell for objects,
             // with more "circular" graphics. This can reduce depth when it's calculated in the shader.

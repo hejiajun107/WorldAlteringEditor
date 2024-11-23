@@ -44,7 +44,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = cell.Level;
             }
 
-            return ((CellMath.CellTopLeftPointFromCellCoords(cell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return ((CellMath.CellTopLeftPointFromCellCoords(cell.CoordsToPoint(), Map).Y + (Constants.CellSizeY * 2)) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 

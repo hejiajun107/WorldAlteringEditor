@@ -369,7 +369,7 @@ namespace TSMapEditor.Rendering
             SetPaletteEffectParams(palettedColorDrawEffect, TheaterGraphics.TheaterPalette.GetTexture(), true, false, 1.0f);
             palettedColorDrawEffect.Parameters["ComplexDepth"].SetValue(false);
             palettedColorDrawEffect.Parameters["IncreaseDepthUpwards"].SetValue(false);
-            palettedColorDrawEffect.Parameters["DecreaseDepthUpwards"].SetValue(true);
+            palettedColorDrawEffect.Parameters["DecreaseDepthUpwards"].SetValue(false);
             var palettedColorDrawSettings = new SpriteBatchSettings(spriteSortMode, BlendState.Opaque, null, depthRenderStencilState, null, palettedColorDrawEffect);
             Renderer.PushSettings(palettedColorDrawSettings);
             DoForVisibleCells(DrawTerrainTileAndRegisterObjects);

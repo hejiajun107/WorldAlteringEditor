@@ -2,6 +2,8 @@
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using TSMapEditor.Models;
 using TSMapEditor.Rendering;
 using TSMapEditor.UI.CursorActions;
@@ -33,6 +35,18 @@ namespace TSMapEditor.UI.Sidebar
 
         private ICursorActionTarget cursorActionTarget;
 
+        static List<string> sidebarModeNames = new List<string>
+        {
+            "Infantry",
+            "Vehicles",
+            "Aircraft",
+            "Naval",
+            "Buildings",
+            "Terrain Objects",
+            "Overlays",
+            "Smudges"
+        };
+
         public override void Initialize()
         {
             Name = nameof(EditorSidebar);
@@ -44,35 +58,37 @@ namespace TSMapEditor.UI.Sidebar
             lbSelection.Width = Width;
             lbSelection.FontIndex = Constants.UIBoldFont;
 
-            for (int i = 1; i < (int)SidebarMode.SidebarModeCount; i++)
+            Debug.Assert(sidebarModeNames.Count == (int)SidebarMode.SidebarModeCount);
+
+            for (int i = 0; i < (int)SidebarMode.SidebarModeCount; i++)
             {
                 SidebarMode sidebarMode = (SidebarMode)i;
-                lbSelection.AddItem(new XNAListBoxItem() { Text = sidebarMode.ToString(), Tag = sidebarMode });
+                lbSelection.AddItem(new XNAListBoxItem() { Text = sidebarModeNames[i], Tag = sidebarMode });
             }
 
             lbSelection.Height = lbSelection.Items.Count * lbSelection.LineHeight + 5;
             AddChild(lbSelection);
             lbSelection.EnableScrollbar = false;
 
-            var aircraftListPanel = new AircraftListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
-            aircraftListPanel.Name = nameof(aircraftListPanel);
-            InitPanel(aircraftListPanel);
-
-            var buildingListPanel = new BuildingListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
-            buildingListPanel.Name = nameof(buildingListPanel);
-            InitPanel(buildingListPanel);
+            var infantryListPanel = new InfantryListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
+            infantryListPanel.Name = nameof(infantryListPanel);
+            InitPanel(infantryListPanel);
 
             var unitListPanel = new UnitListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget, false);
             unitListPanel.Name = nameof(unitListPanel);
             InitPanel(unitListPanel);
 
+            var aircraftListPanel = new AircraftListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
+            aircraftListPanel.Name = nameof(aircraftListPanel);
+            InitPanel(aircraftListPanel);
+
             var navalUnitListPanel = new UnitListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget, true);
             navalUnitListPanel.Name = nameof(navalUnitListPanel);
             InitPanel(navalUnitListPanel);
 
-            var infantryListPanel = new InfantryListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
-            infantryListPanel.Name = nameof(infantryListPanel);
-            InitPanel(infantryListPanel);
+            var buildingListPanel = new BuildingListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
+            buildingListPanel.Name = nameof(buildingListPanel);
+            InitPanel(buildingListPanel);
 
             var terrainObjectListPanel = new TerrainObjectListPanel(WindowManager, editorState, map, theaterGraphics, cursorActionTarget);
             terrainObjectListPanel.Name = nameof(terrainObjectListPanel);
@@ -88,11 +104,11 @@ namespace TSMapEditor.UI.Sidebar
 
             modePanels = new XNAPanel[]
             {
-                aircraftListPanel,
-                buildingListPanel,
-                unitListPanel,
-                navalUnitListPanel,
                 infantryListPanel,
+                unitListPanel,
+                aircraftListPanel,
+                navalUnitListPanel,
+                buildingListPanel,
                 terrainObjectListPanel,
                 overlayListPanel,
                 smudgeListPanel

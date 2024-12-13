@@ -121,14 +121,14 @@ namespace TSMapEditor.UI.Sidebar
             // This is less extensible than using events, but with events we'd have to store
             // the delegates to be able to unsubscribe from them later on.
             // Thus, this results in neater code.
-            KeyboardCommands.Instance.AircraftMenu.Action = () => lbSelection.SelectedIndex = 0;
-            KeyboardCommands.Instance.BuildingMenu.Action = () => lbSelection.SelectedIndex = 1;
-            KeyboardCommands.Instance.VehicleMenu.Action = () => lbSelection.SelectedIndex = 2;
-            KeyboardCommands.Instance.NavalMenu.Action = () => lbSelection.SelectedIndex = 3;
-            KeyboardCommands.Instance.InfantryMenu.Action = () => lbSelection.SelectedIndex = 4;
-            KeyboardCommands.Instance.TerrainObjectMenu.Action = () => lbSelection.SelectedIndex = 5;
-            KeyboardCommands.Instance.OverlayMenu.Action = () => lbSelection.SelectedIndex = 6;
-            KeyboardCommands.Instance.SmudgeMenu.Action = () => lbSelection.SelectedIndex = 7;
+            KeyboardCommands.Instance.InfantryMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Infantry;
+            KeyboardCommands.Instance.VehicleMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Vehicles;
+            KeyboardCommands.Instance.AircraftMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Aircraft;
+            KeyboardCommands.Instance.NavalMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Naval;
+            KeyboardCommands.Instance.BuildingMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Buildings;
+            KeyboardCommands.Instance.TerrainObjectMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.TerrainObjects;
+            KeyboardCommands.Instance.OverlayMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Overlay;
+            KeyboardCommands.Instance.SmudgeMenu.Action = () => lbSelection.SelectedIndex = (int)SidebarMode.Smudges;
 
             Keyboard.OnKeyPressed += Keyboard_OnKeyPressed;
             WindowManager.RenderResolutionChanged += WindowManager_RenderResolutionChanged;

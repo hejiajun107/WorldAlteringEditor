@@ -1,4 +1,6 @@
-﻿using System;
+﻿using I18n;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 using TSMapEditor.Rendering;
 
@@ -38,7 +40,7 @@ namespace TSMapEditor
 
         private static void HandleException(Exception ex)
         {
-            MessageBox.Show("The map editor failed to launch.\r\n\r\nReason: " + ex.Message + "\r\n\r\n Stack trace: " + ex.StackTrace);
+            MessageBox.Show(String.Format(Shared.The_map_editor_failed_to_launch,ex.Message,ex.StackTrace));
         }
 
         public static void DisableExceptionHandler()

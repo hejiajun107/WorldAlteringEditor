@@ -40,6 +40,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\I18n\I18n.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Rampastring.Updater">
       <HintPath>..\..\..\Rampastring.Updater\Rampastring.Updater\bin\Release\net7.0\Rampastring.Updater.dll</HintPath>
     </Reference>

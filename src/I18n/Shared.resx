@@ -120,4 +120,31 @@
   <data name="The map editor failed to launch" xml:space="preserve">
     <value>The map editor failed to launch.\r\n\r\nReason: {0} \r\n\r\n Stack trace: {1}</value>
   </data>
+  <data name="Path to the game directory:" xml:space="preserve">
+    <value>Path to the game directory:</value>
+  </data>
+  <data name="Browse..." xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="Path of the map file to load (can be relative to game directory):" xml:space="preserve">
+    <value>Path of the map file to load (can be relative to game directory):</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="New Map..." xml:space="preserve">
+    <value>New Map...</value>
+  </data>
+  <data name="Created by Rampastring" xml:space="preserve">
+    <value>Created by Rampastring</value>
+  </data>
+  <data name="Recent files:" xml:space="preserve">
+    <value>Recent files:</value>
+  </data>
+  <data name="Alternatively, select a map file below:" xml:space="preserve">
+    <value>Alternatively, select a map file below:</value>
+  </data>
+  <data name="Failed to create new map! Returned error message:" xml:space="preserve">
+    <value>Failed to create new map! Returned error message:</value>
+  </data>
 </root>

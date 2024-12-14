@@ -120,4 +120,31 @@
   <data name="The map editor failed to launch" xml:space="preserve">
     <value>地图编辑器启动失败.\r\n\r\n原因: {0} \r\n\r\n 栈跟踪: {1}</value>
   </data>
+  <data name="Path to the game directory:" xml:space="preserve">
+    <value>游戏目录：</value>
+  </data>
+  <data name="Browse..." xml:space="preserve">
+    <value>浏览...</value>
+  </data>
+  <data name="Path of the map file to load (can be relative to game directory):" xml:space="preserve">
+    <value>需要载入的地图路径（可以是相对于游戏目录的路径）：</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>载入</value>
+  </data>
+  <data name="New Map..." xml:space="preserve">
+    <value>新地图...</value>
+  </data>
+  <data name="Created by Rampastring" xml:space="preserve">
+    <value>作者：Rampastring</value>
+  </data>
+  <data name="Recent files:" xml:space="preserve">
+    <value>最近的文件：</value>
+  </data>
+  <data name="Alternatively, select a map file below:" xml:space="preserve">
+    <value>或在下方选择一个文件：</value>
+  </data>
+  <data name="Failed to create new map! Returned error message:" xml:space="preserve">
+    <value>创建新地图失败！返回的错误信息：</value>
+  </data>
 </root>

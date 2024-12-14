@@ -61,6 +61,87 @@ namespace I18n {
         }
         
         /// <summary>
+        ///   查找类似 Alternatively, select a map file below: 的本地化字符串。
+        /// </summary>
+        public static string Alternatively__select_a_map_file_below_ {
+            get {
+                return ResourceManager.GetString("Alternatively, select a map file below:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Browse... 的本地化字符串。
+        /// </summary>
+        public static string Browse___ {
+            get {
+                return ResourceManager.GetString("Browse...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Created by Rampastring 的本地化字符串。
+        /// </summary>
+        public static string Created_by_Rampastring {
+            get {
+                return ResourceManager.GetString("Created by Rampastring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to create new map! Returned error message: 的本地化字符串。
+        /// </summary>
+        public static string Failed_to_create_new_map__Returned_error_message_ {
+            get {
+                return ResourceManager.GetString("Failed to create new map! Returned error message:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Load 的本地化字符串。
+        /// </summary>
+        public static string Load {
+            get {
+                return ResourceManager.GetString("Load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 New Map... 的本地化字符串。
+        /// </summary>
+        public static string New_Map___ {
+            get {
+                return ResourceManager.GetString("New Map...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Path of the map file to load (can be relative to game directory): 的本地化字符串。
+        /// </summary>
+        public static string Path_of_the_map_file_to_load__can_be_relative_to_game_directory__ {
+            get {
+                return ResourceManager.GetString("Path of the map file to load (can be relative to game directory):", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Path to the game directory: 的本地化字符串。
+        /// </summary>
+        public static string Path_to_the_game_directory_ {
+            get {
+                return ResourceManager.GetString("Path to the game directory:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Recent files: 的本地化字符串。
+        /// </summary>
+        public static string Recent_files_ {
+            get {
+                return ResourceManager.GetString("Recent files:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 The map editor failed to launch.\r\n\r\nReason: {0} \r\n\r\n Stack trace: {1} 的本地化字符串。
         /// </summary>
         public static string The_map_editor_failed_to_launch {

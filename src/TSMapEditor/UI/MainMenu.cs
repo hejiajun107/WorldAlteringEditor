@@ -9,6 +9,8 @@ using TSMapEditor.UI.Controls;
 using TSMapEditor.UI.Windows;
 using TSMapEditor.UI.Windows.MainMenuWindows;
 using MessageBoxButtons = TSMapEditor.UI.Windows.MessageBoxButtons;
+using I18n;
+
 
 #if WINDOWS
 using System.Windows.Forms;
@@ -51,7 +53,7 @@ namespace TSMapEditor.UI
             lblGameDirectory.Name = nameof(lblGameDirectory);
             lblGameDirectory.X = Constants.UIEmptySideSpace;
             lblGameDirectory.Y = Constants.UIEmptyTopSpace;
-            lblGameDirectory.Text = "Path to the game directory:";
+            lblGameDirectory.Text = Shared.Path_to_the_game_directory_;
             AddChild(lblGameDirectory);
 
             tbGameDirectory = new EditorTextBox(WindowManager);
@@ -81,7 +83,7 @@ namespace TSMapEditor.UI
             btnBrowseGameDirectory = new EditorButton(WindowManager);
             btnBrowseGameDirectory.Name = nameof(btnBrowseGameDirectory);
             btnBrowseGameDirectory.Width = BrowseButtonWidth;
-            btnBrowseGameDirectory.Text = "Browse...";
+            btnBrowseGameDirectory.Text = Shared.Browse___;
             btnBrowseGameDirectory.Y = tbGameDirectory.Y;
             btnBrowseGameDirectory.X = tbGameDirectory.Right + Constants.UIEmptySideSpace;
             btnBrowseGameDirectory.Height = tbGameDirectory.Height;
@@ -92,7 +94,7 @@ namespace TSMapEditor.UI
             lblMapPath.Name = nameof(lblMapPath);
             lblMapPath.X = Constants.UIEmptySideSpace;
             lblMapPath.Y = tbGameDirectory.Bottom + Constants.UIEmptyTopSpace;
-            lblMapPath.Text = "Path of the map file to load (can be relative to game directory):";
+            lblMapPath.Text = Shared.Path_of_the_map_file_to_load__can_be_relative_to_game_directory__;
             AddChild(lblMapPath);
 
             tbMapPath = new EditorTextBox(WindowManager);
@@ -107,7 +109,7 @@ namespace TSMapEditor.UI
             btnBrowseMapPath = new EditorButton(WindowManager);
             btnBrowseMapPath.Name = nameof(btnBrowseMapPath);
             btnBrowseMapPath.Width = BrowseButtonWidth;
-            btnBrowseMapPath.Text = "Browse...";
+            btnBrowseMapPath.Text = Shared.Browse___;
             btnBrowseMapPath.Y = tbMapPath.Y;
             btnBrowseMapPath.X = tbMapPath.Right + Constants.UIEmptySideSpace;
             btnBrowseMapPath.Height = tbMapPath.Height;
@@ -117,7 +119,7 @@ namespace TSMapEditor.UI
             btnLoad = new EditorButton(WindowManager);
             btnLoad.Name = nameof(btnLoad);
             btnLoad.Width = 150;
-            btnLoad.Text = "Load";
+            btnLoad.Text = Shared.Load;
             btnLoad.Y = Height - btnLoad.Height - Constants.UIEmptyBottomSpace;
             btnLoad.X = Width - btnLoad.Width - Constants.UIEmptySideSpace;
             AddChild(btnLoad);
@@ -126,7 +128,7 @@ namespace TSMapEditor.UI
             var btnCreateNewMap = new EditorButton(WindowManager);
             btnCreateNewMap.Name = nameof(btnCreateNewMap);
             btnCreateNewMap.Width = 150;
-            btnCreateNewMap.Text = "New Map...";
+            btnCreateNewMap.Text = Shared.New_Map___;
             btnCreateNewMap.X = Constants.UIEmptySideSpace;
             btnCreateNewMap.Y = btnLoad.Y;
             AddChild(btnCreateNewMap);
@@ -134,7 +136,7 @@ namespace TSMapEditor.UI
 
             var lblCopyright = new XNALabel(WindowManager);
             lblCopyright.Name = nameof(lblCopyright);
-            lblCopyright.Text = "Created by Rampastring";
+            lblCopyright.Text = Shared.Created_by_Rampastring;
             lblCopyright.TextColor = UISettings.ActiveSettings.SubtleTextColor;
             AddChild(lblCopyright);
             lblCopyright.CenterOnControlVertically(btnCreateNewMap);
@@ -150,7 +152,7 @@ namespace TSMapEditor.UI
                 lblRecentFiles.Name = nameof(lblRecentFiles);
                 lblRecentFiles.X = Constants.UIEmptySideSpace;
                 lblRecentFiles.Y = directoryListingY;
-                lblRecentFiles.Text = "Recent files:";
+                lblRecentFiles.Text = Shared.Recent_files_;
                 AddChild(lblRecentFiles);
 
                 var recentFilesPanel = new RecentFilesPanel(WindowManager);
@@ -168,7 +170,7 @@ namespace TSMapEditor.UI
             lblDirectoryListing.Name = nameof(lblDirectoryListing);
             lblDirectoryListing.X = Constants.UIEmptySideSpace;
             lblDirectoryListing.Y = directoryListingY;
-            lblDirectoryListing.Text = "Alternatively, select a map file below:";
+            lblDirectoryListing.Text = Shared.Alternatively__select_a_map_file_below_;
             AddChild(lblDirectoryListing);
 
             lbFileList = new FileBrowserListBox(WindowManager);
@@ -251,7 +253,7 @@ namespace TSMapEditor.UI
         {
             string error = MapSetup.InitializeMap(gameDirectory, true, null, e, WindowManager);
             if (!string.IsNullOrWhiteSpace(error))
-                throw new InvalidOperationException("Failed to create new map! Returned error message: " + error);
+                throw new InvalidOperationException(Shared.Failed_to_create_new_map__Returned_error_message_ + error);
 
             MapSetup.LoadTheaterGraphics(WindowManager, gameDirectory);
             ((CreateNewMapWindow)sender).OnCreateNewMap -= CreateMapWindow_OnCreateNewMap;
